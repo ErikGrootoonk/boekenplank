@@ -6,6 +6,30 @@
     <title>Boekenlijst</title>
 </head>
 <body>
-    <h1>Welcome to Boekenlijst</h1>
+    <h1>Boekenlijst</h1>
+    <ul>
+        <li> test </li>
+        {% for boek in book %}
+        
+            <li>{{ book.title }} - {{ book.author }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Voeg een nieuw boek toe</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="title">Titel:</label>
+        <input type="text" id="title" name="titel" required>
+        <br>
+        <label for="author">Auteur:</label>
+        <input type="text" id="author" name="auteur" required>
+        <br>
+        <button type="submit">Voeg toe</button>
+    </form>
+    <h2>Zoek een boek</h2>
+    <form method="GET">
+        <label for="zoekterm">Zoekterm:</label>
+        <input type="text" id="zoekterm" name="zoekterm" required>
+        <button type="submit">Zoek</button>
+    </form>
 </body>
 </html>
