@@ -14,6 +14,7 @@ venv/
 ENV/ 
 env.bak/ 
 venv.bak/ 
+bibliotheek/
 
 # Visual Studio Code # 
 .vscode/* 
