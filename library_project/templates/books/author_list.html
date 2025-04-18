@@ -1,0 +1,101 @@
+<!-- templates/books/book_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} - Book Library{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'book-list' %}">Books</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" class="img-fluid rounded mb-3" alt="{{ book.title }}">
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-light text-secondary rounded" style="height: 300px;">
+                    <i class="fas fa-book fa-5x"></i>
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <span class="badge {% if book.available %}bg-success{% else %}bg-danger{% endif %} mb-2" style="font-size: 1rem;">
+                        {% if book.available %}Available{% else %}Checked Out{% endif %}
+                    </span>
+                    
+                    {% if user.is_authenticated %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'book-update' book.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit me-1"></i> Edit
+                        </a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'book-delete' book.pk %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash me-1"></i> Delete
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <h1 class="mb-2">{{ book.title }}</h1>
+                <h5 class="text-muted mb-3">By <a href="{% url 'author-detail' book.author.pk %}">{{ book.author.name }}</a></h5>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                        {% if book.publication_date %}
+                        <p><strong>Published:</strong> {{ book.publication_date|date:"F j, Y" }}</p>
+                        {% endif %}
+                        {% if book.pages %}
+                        <p><strong>Pages:</strong> {{ book.pages }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {% if book.genres.all %}
+                        <p>
+                            <strong>Genres:</strong>
+                            {% for genre in book.genres.all %}
+                            <a href="{% url 'book-list' %}?genre={{ genre.name }}" class="badge bg-secondary text-decoration-none">{{ genre.name }}</a>
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                        <p><strong>Added on:</strong> {{ book.created_at|date:"F j, Y" }}</p>
+                        <p><strong>Last updated:</strong> {{ book.updated_at|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Description</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if book.description %}
+                        <p class="card-text">{{ book.description|linebreaks }}</p>
+                        {% else %}
+                        <p class="text-muted">No description available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if book.author.bio %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">About the Author</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ book.author.bio|linebreaks }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
